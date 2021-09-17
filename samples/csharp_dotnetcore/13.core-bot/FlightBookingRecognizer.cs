@@ -33,8 +33,9 @@ namespace Microsoft.BotBuilderSamples
                 {
                     PredictionOptions = new Bot.Builder.AI.LuisV3.LuisPredictionOptions
                     {
-                        IncludeInstanceData = true,
-                        Version = configuration["LuisAppVersion"],
+                        IncludeInstanceData = true
+                        //,
+                        //Version = configuration["LuisAppVersion"],
                     }
                     //,
                     //Timeout = TimeSpan.FromMinutes(20).Milliseconds
