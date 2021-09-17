@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -15,7 +17,10 @@ namespace Microsoft.BotBuilderSamples
 
         public FlightBookingRecognizer(IConfiguration configuration)
         {
-            var luisIsConfigured = !string.IsNullOrEmpty(configuration["LuisAppId"]) && !string.IsNullOrEmpty(configuration["LuisAPIKey"]) && !string.IsNullOrEmpty(configuration["LuisAPIHostName"]);
+            var luisIsConfigured = !string.IsNullOrEmpty(configuration["LuisAppId"])
+                && !string.IsNullOrEmpty(configuration["LuisAPIKey"])
+                && !string.IsNullOrEmpty(configuration["LuisAPIHostName"])
+                && !string.IsNullOrEmpty(configuration["LuisAppVersion"]);
             if (luisIsConfigured)
             {
                 var luisApplication = new LuisApplication(
@@ -29,10 +34,13 @@ namespace Microsoft.BotBuilderSamples
                     PredictionOptions = new Bot.Builder.AI.LuisV3.LuisPredictionOptions
                     {
                         IncludeInstanceData = true,
+                        Version = configuration["LuisAppVersion"],
                     }
+                    //,
+                    //Timeout = TimeSpan.FromMinutes(20).Milliseconds
                 };
 
-                _recognizer = new LuisRecognizer(recognizerOptions);
+                _recognizer = new LuisRecognizer(recognizerOptions, new LoggingHandler());
             }
         }
 

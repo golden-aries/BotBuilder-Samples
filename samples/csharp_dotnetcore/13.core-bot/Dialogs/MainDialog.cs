@@ -63,9 +63,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
                 return await stepContext.BeginDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
             }
-
-            // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
-            var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            FlightBooking luisResult = null;
+            try
+            {
+                // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
+                luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            }
+            catch
+            {
+                throw;
+            }
             switch (luisResult.TopIntent().intent)
             {
                 case FlightBooking.Intent.BookFlight:
