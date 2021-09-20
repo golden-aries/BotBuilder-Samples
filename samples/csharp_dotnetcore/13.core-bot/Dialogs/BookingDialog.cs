@@ -38,13 +38,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             var bookingDetails = (BookingDetails)stepContext.Options;
 
+            DialogTurnResult result;
             if (bookingDetails.Destination == null)
             {
                 var promptMessage = MessageFactory.Text(DestinationStepMsgText, DestinationStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                result = await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return result;
             }
 
-            return await stepContext.NextAsync(bookingDetails.Destination, cancellationToken);
+            result = await stepContext.NextAsync(bookingDetails.Destination, cancellationToken);
+            return result;
         }
 
         private async Task<DialogTurnResult> OriginStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -53,13 +56,17 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             bookingDetails.Destination = (string)stepContext.Result;
 
+            DialogTurnResult result;
+
             if (bookingDetails.Origin == null)
             {
                 var promptMessage = MessageFactory.Text(OriginStepMsgText, OriginStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                result = await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return result;
             }
 
-            return await stepContext.NextAsync(bookingDetails.Origin, cancellationToken);
+            result = await stepContext.NextAsync(bookingDetails.Origin, cancellationToken);
+            return result;
         }
 
         private async Task<DialogTurnResult> TravelDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -67,13 +74,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var bookingDetails = (BookingDetails)stepContext.Options;
 
             bookingDetails.Origin = (string)stepContext.Result;
+            DialogTurnResult result;
 
             if (bookingDetails.TravelDate == null || IsAmbiguous(bookingDetails.TravelDate))
             {
-                return await stepContext.BeginDialogAsync(nameof(DateResolverDialog), bookingDetails.TravelDate, cancellationToken);
+                result = await stepContext.BeginDialogAsync(nameof(DateResolverDialog), bookingDetails.TravelDate, cancellationToken);
+                return result;
             }
 
-            return await stepContext.NextAsync(bookingDetails.TravelDate, cancellationToken);
+            result = await stepContext.NextAsync(bookingDetails.TravelDate, cancellationToken);
+            return result;
         }
 
         private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -85,25 +95,30 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var messageText = $"Please confirm, I have you traveling to: {bookingDetails.Destination} from: {bookingDetails.Origin} on: {bookingDetails.TravelDate}. Is this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
-            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            var result = await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            return result;
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            DialogTurnResult result;
             if ((bool)stepContext.Result)
             {
                 var bookingDetails = (BookingDetails)stepContext.Options;
 
-                return await stepContext.EndDialogAsync(bookingDetails, cancellationToken);
+                result = await stepContext.EndDialogAsync(bookingDetails, cancellationToken);
+                return result;
             }
 
-            return await stepContext.EndDialogAsync(null, cancellationToken);
+            result = await stepContext.EndDialogAsync(null, cancellationToken);
+            return result;
         }
 
         private static bool IsAmbiguous(string timex)
         {
             var timexProperty = new TimexProperty(timex);
-            return !timexProperty.Types.Contains(Constants.TimexTypes.Definite);
+            var result = !timexProperty.Types.Contains(Constants.TimexTypes.Definite);
+            return result;
         }
     }
 }

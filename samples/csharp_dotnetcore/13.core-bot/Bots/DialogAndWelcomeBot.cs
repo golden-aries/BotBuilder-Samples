@@ -21,7 +21,10 @@ namespace Microsoft.BotBuilderSamples.Bots
         {
         }
 
-        protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
+        protected override async Task OnMembersAddedAsync(
+            IList<ChannelAccount> membersAdded,
+            ITurnContext<IConversationUpdateActivity> turnContext,
+            CancellationToken cancellationToken)
         {
             foreach (var member in membersAdded)
             {
@@ -32,7 +35,9 @@ namespace Microsoft.BotBuilderSamples.Bots
                     var welcomeCard = CreateAdaptiveCardAttachment();
                     var response = MessageFactory.Attachment(welcomeCard, ssml: "Welcome to Bot Framework!");
                     await turnContext.SendActivityAsync(response, cancellationToken);
-                    await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+                    await Dialog.RunAsync(turnContext,
+                        ConversationState.CreateProperty<DialogState>("DialogState"),
+                        cancellationToken);
                 }
             }
         }
@@ -42,7 +47,8 @@ namespace Microsoft.BotBuilderSamples.Bots
         {
             var cardResourcePath = "CoreBot.Cards.welcomeCard.json";
 
-            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+            using (var stream = GetType().Assembly
+                .GetManifestResourceStream(cardResourcePath))
             {
                 using (var reader = new StreamReader(stream))
                 {

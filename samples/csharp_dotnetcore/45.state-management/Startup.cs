@@ -4,7 +4,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Azure.Blobs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,13 +25,14 @@ namespace Microsoft.BotBuilderSamples
             // Azure Blob Storage or Cosmos DB are below).
             var storage = new MemoryStorage();
 
+            #region AZURE BLOB STORAGE
             /* AZURE BLOB STORAGE - Uncomment the code in this section to use Azure blob storage */
-                           
+
             // var storage = new BlobsStorage("<blob-storage-connection-string>", "bot-state");
 
             /* END AZURE BLOB STORAGE */
-
-
+            #endregion
+            #region COSMOSDB STORAGE
             /* COSMOSDB STORAGE - Uncomment the code in this section to use CosmosDB storage */
 
             // var cosmosDbStorageOptions = new CosmosDbPartitionedStorageOptions()
@@ -45,7 +45,7 @@ namespace Microsoft.BotBuilderSamples
             // var storage = new CosmosDbPartitionedStorage(cosmosDbStorageOptions);
 
             /* END COSMOSDB STORAGE */
-
+            #endregion
             // Create the User state passing in the storage layer.
             var userState = new UserState(storage);
             services.AddSingleton(userState);

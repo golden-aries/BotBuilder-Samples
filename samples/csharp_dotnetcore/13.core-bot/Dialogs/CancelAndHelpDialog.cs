@@ -27,7 +27,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return result;
             }
 
-            return await base.OnContinueDialogAsync(innerDc, cancellationToken);
+            result = await base.OnContinueDialogAsync(innerDc, cancellationToken);
+            return result;
         }
 
         private async Task<DialogTurnResult> InterruptAsync(DialogContext innerDc, CancellationToken cancellationToken)
